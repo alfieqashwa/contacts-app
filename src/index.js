@@ -4,7 +4,9 @@ import PropTypes from "prop-types";
 import "./index.css";
 import registerServiceWorker from "./registerServiceWorker";
 
-// Main component. Renders a SearchBar and a ContactList
+// Main (stateful) component.
+// Renders a SearchBar and a ContactList
+// Passes down filterTest state and handleUserInput callback as props
 class ContactsApp extends Component {
   constructor() {
     super();
@@ -36,7 +38,8 @@ ContactsApp.PropTypes = {
   contacts: PropTypes.arrayOf(PropTypes.object)
 };
 
-// SearchBar class component
+// Pure component that receives 2 props form the parent
+// filterText (string) and onUserInput (callback function)
 class SearchBar extends Component {
   // (e) or (event) is doesn't matter
   handleChange(e) {
@@ -59,7 +62,10 @@ SearchBar.PropTypes = {
   filterText: PropTypes.string.isRequired
 };
 
-// ContactList class component
+// Pure component that receives both contacts and filterText as props
+// The component is responsible for actualy filtering the contacts before displaying them
+// It's considered a pure component because given the same contacts
+// and filterText props the output will always be the same
 class ContactList extends Component {
   render() {
     let filteredContacts = this.props.contacts.filter(
