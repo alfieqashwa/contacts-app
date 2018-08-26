@@ -6,11 +6,28 @@ import registerServiceWorker from "./registerServiceWorker";
 
 // Main component. Renders a SearchBar and a ContactList
 class ContactsApp extends Component {
+  constructor() {
+    super();
+    this.state = {
+      filterText: ""
+    };
+  }
+
+  handleUserInput(searchTerm) {
+    this.setState({ filterText: searchTerm });
+  }
+
   render() {
     return (
       <div>
-        <SearchBar />
-        <ContactList contacts={this.props.contacts} />
+        <SearchBar
+          filterText={this.state.filterText}
+          onUserInput={this.handleUserInput.bind(this)}
+        />
+        <ContactList
+          contacts={this.props.contacts}
+          filterText={this.state.filterText}
+        />
       </div>
     );
   }
@@ -19,17 +36,37 @@ ContactsApp.PropTypes = {
   contacts: PropTypes.arrayOf(PropTypes.object)
 };
 
+// SearchBar class component
 class SearchBar extends Component {
-  render() {
-    return <input type="search" placeholder="search" />;
+  handleChange(event) {
+    this.props.onUserInput(event.target.value);
   }
-}
-
-class ContactList extends Component {
   render() {
     return (
+      <input
+        type="search"
+        placeholder="search"
+        value={this.props.filterText}
+        onChange={this.handleChange.bind(this)}
+      />
+    );
+  }
+}
+// Don't forget to add the new propType requirements
+SearchBar.PropTypes = {
+  onUserInput: PropTypes.func.isRequired,
+  filterText: PropTypes.string.isRequired
+};
+
+// ContactList class component
+class ContactList extends Component {
+  render() {
+    let filteredContacts = this.props.contacts.filter(
+      contact => contact.name.indexOf(this.props.filterText) !== -1
+    );
+    return (
       <ul>
-        {this.props.contacts.map(contact => (
+        {filteredContacts.map(contact => (
           <ContactItem
             key={contact.email}
             name={contact.name}
