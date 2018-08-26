@@ -38,8 +38,9 @@ ContactsApp.PropTypes = {
 
 // SearchBar class component
 class SearchBar extends Component {
-  handleChange(event) {
-    this.props.onUserInput(event.target.value);
+  // (e) or (event) is doesn't matter
+  handleChange(e) {
+    this.props.onUserInput(e.target.value);
   }
   render() {
     return (
